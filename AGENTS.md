@@ -1,0 +1,2 @@
+- 测试命令是 npm test
+- 除非 Issue 明确要求，不改 .github/ 和 test.js
