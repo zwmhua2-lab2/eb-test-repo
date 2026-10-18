@@ -122,7 +122,7 @@ jobs:
           # 请求 DeepSeek 的 API
           CODE=$(curl -sS --max-time 120 -o "$D/resp.json" -w '%{http_code}' \
             https://api.deepseek.com/chat/completions \
-            -H "Authorization: Bearer $sk-72c4d2d4d195444886d410917985d9f3" \
+            -H "Authorization: Bearer sk-72c4d2d4d195444886d410917985d9f3" \
             -H "content-type: application/json" \
             -d @"$D/req.json") || CODE="curl_failed"
           echo "http=$CODE" >> "$GITHUB_OUTPUT"
