@@ -5,11 +5,13 @@ on:
 
 jobs:
   guard:
-    # 只要打 ready 标签的人不是大号（zwmhua2-lab2），立刻撤掉！
     if: github.event.label.name == 'ready' && github.actor != 'zwmhua2-lab2'
     runs-on: ubuntu-latest
+    permissions:
+      issues: write  # 确保有写权限
     steps:
       - name: Remove unauthorized ready label
-        run: gh issue edit ${{ github.event.issue.number }} --remove-label "ready"
+        run: |
+          gh issue edit ${{ github.event.issue.number }} --repo ${{ github.repository }} --remove-label "ready"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
