@@ -1,2 +1,2 @@
-console.log('✅ Test PASS123');
-process.exit(0) 123123 ;
+console.log('✅ Test PASS');
+process.exit(0);
