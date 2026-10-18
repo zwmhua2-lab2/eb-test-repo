@@ -2,6 +2,8 @@ name: Node Test CI
 on:
   pull_request:
     branches: [ main ]
+  push:
+    branches: [ main ]  # 新增这行
 
 jobs:
   test:
