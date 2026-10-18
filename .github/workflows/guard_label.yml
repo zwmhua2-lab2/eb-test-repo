@@ -1,17 +1,26 @@
 name: Guard Ready Label
 on:
   issues:
-    types: [labeled]
+    types: [labeled, edited]
 
 jobs:
   guard:
-    if: github.event.label.name == 'ready' && github.actor != 'zwmhua2-lab2'
+    # 只要操作者不是大号，且（贴了ready标签 或 修改了带ready的正文），立刻撤掉
+    if: >-
+      github.event.sender.login != 'zwmhua2-lab2' && 
+      ((github.event.action == 'labeled' && github.event.label.name == 'ready') || 
+       (github.event.action == 'edited' && contains(github.event.issue.labels.*.name, 'ready')))
     runs-on: ubuntu-latest
     permissions:
-      issues: write  # 确保有写权限
+      issues: write
     steps:
-      - name: Remove unauthorized ready label
+      - name: Check for hidden injections & Remove label
         run: |
+          BODY="${{ github.event.issue.body }}"
+          # 如果正文包含 HTML 注释或零宽字符，直接判定为注入
+          if [[ "$BODY" == *"<!--"* ]] || [[ "$BODY" == *$'\u200b'* ]]; then
+            gh issue comment ${{ github.event.issue.number }} --repo ${{ github.repository }} --body "🚨 检测到疑似隐藏注入字符，已自动撤销 ready 标签。"
+          fi
           gh issue edit ${{ github.event.issue.number }} --repo ${{ github.repository }} --remove-label "ready"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
